@@ -51,9 +51,8 @@ install_RAPIDS () {
         # install RAPIDS packages
             conda install -y --prefix /usr/local \
                     -c rapidsai-nightly/label/xgboost -c rapidsai-nightly -c nvidia -c conda-forge -c defaults \
-                    python=3.6 gdal=3.0.4 cudatoolkit=$CTK_VERSION \
-                    cudf=$RAPIDS_VERSION cuml cugraph gcsfs pynvml cuspatial xgboost \
-                    dask-cudf cusignal  
+                    python=3.6 gdal=3.0.4 cudatoolkit=$CTK_VERSION numba=0.49\
+                    cusignal 
         elif (( $RAPIDS_RESULT == 13 )) ;then #0.13 uses xgboost 1.0.2, low than that use 1.0.0
             echo "Installing RAPIDS $RAPIDS_VERSION packages from the stable release channel"
             echo "Please standby, this will take a few minutes..."
@@ -61,8 +60,8 @@ install_RAPIDS () {
             conda install -y --prefix /usr/local \
                 -c rapidsai -c nvidia -c conda-forge -c defaults \
                 python=3.6 cudatoolkit=$CTK_VERSION \
-                cudf=$RAPIDS_VERSION cuml cugraph cuspatial gcsfs pynvml xgboost=1.0.2dev.rapidsai$RAPIDS_VERSION \
-                dask-cudf cusignal numba=0.48
+                xgboost=1.0.2dev.rapidsai$RAPIDS_VERSION \
+                cusignal numba=0.48
         else #Stable packages #0.14 uses xgboost 1.11.0
             echo "Installing RAPIDS $RAPIDS_VERSION packages from the stable release channel"
             echo "Please standby, this will take a few minutes..."
@@ -70,15 +69,12 @@ install_RAPIDS () {
             conda install -y --prefix /usr/local \
                 -c rapidsai/label/main -c rapidsai -c nvidia -c conda-forge -c defaults \
                 python=3.6 gdal=3.0.4 cudatoolkit=$CTK_VERSION \
-                cudf=$RAPIDS_VERSION cuml cugraph cuspatial gcsfs pynvml xgboost=1.1.0dev.rapidsai$RAPIDS_VERSION \
-                dask-cudf cusignal
+                xgboost=1.1.0dev.rapidsai$RAPIDS_VERSION \
+                cusignal numba=0.49
         fi
           
         echo "Copying shared object files to /usr/lib"
         # copy .so files to /usr/lib, where Colab's Python looks for libs
-        cp /usr/local/lib/libcudf.so /usr/lib/libcudf.so
-        cp /usr/local/lib/librmm.so /usr/lib/librmm.so
-        cp /usr/local/lib/libnccl.so /usr/lib/libnccl.so
         echo "Copying RAPIDS compatible xgboost"	
         cp /usr/local/lib/libxgboost.so /usr/lib/libxgboost.so
     fi
